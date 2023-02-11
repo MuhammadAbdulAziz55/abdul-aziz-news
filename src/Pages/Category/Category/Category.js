@@ -9,4 +9,3 @@ const Category = () => {
 };
 
 export default Category;
-<h3>This is Category</h3>;
