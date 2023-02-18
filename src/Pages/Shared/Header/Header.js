@@ -1,11 +1,23 @@
-import React from "react";
+import React, { useContext } from "react";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import LeftSideNav from "../LeftSideNav/LeftSideNav";
+import { Link } from "react-router-dom";
+import { AuthContext } from "../../../contexts/AuthProvider/AuthProvider";
+import { Button, Image } from "react-bootstrap";
+import { FaUser } from "react-icons/fa";
 
 const Header = () => {
+  const { user, logOut } = useContext(AuthContext);
+  console.log(user);
+
+  const handleLogOut = () => {
+    logOut()
+      .then(() => {})
+      .catch((err) => console.error(err));
+  };
   return (
     <div>
       <Navbar
@@ -16,7 +28,9 @@ const Header = () => {
         variant="light"
       >
         <Container>
-          <Navbar.Brand href="#home">Abdul Aziz News</Navbar.Brand>
+          <Navbar.Brand>
+            <Link to="/">Abdul Aziz News</Link>
+          </Navbar.Brand>
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse id="responsive-navbar-nav">
             <Nav className="me-auto">
@@ -36,11 +50,33 @@ const Header = () => {
                 </NavDropdown.Item>
               </NavDropdown>
             </Nav>
-            <Nav>
-              <Nav.Link href="#deets">More deets</Nav.Link>
-              <Nav.Link eventKey={2} href="#memes">
-                Dank memes
-              </Nav.Link>
+            <Nav className="text-center aligns-item-center">
+              <>
+                {user?.uid ? (
+                  <>
+                    <span> {user?.displayName}</span>
+                    <Button variant="light" onClick={handleLogOut}>
+                      Log out
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Link to="/login">Login</Link>
+                    <Link to="/sign-up">Sign up</Link>
+                  </>
+                )}
+              </>
+              <Link to="/profile">
+                {user?.photoURL ? (
+                  <Image
+                    style={{ height: "30px" }}
+                    roundedCircle
+                    src={user?.photoURL}
+                  />
+                ) : (
+                  <FaUser />
+                )}
+              </Link>
             </Nav>
             <div className="d-block d-lg-none">
               <LeftSideNav />
